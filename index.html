@@ -94,7 +94,13 @@
                     >
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">Register</a>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#register-modal"
+                      >Register</a
+                    >
                   </li>
                 </ul>
               </span>
@@ -161,7 +167,6 @@
                   class="form-check-input"
                   type="checkbox"
                   id="show-password"
-                  
                 />
                 <label
                   class="form-check-label"
@@ -190,6 +195,83 @@
     </div>
 
     <!-- 2. Register Modal -->
+    <div class="modal fade" id="register-modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Register New Account
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-2">
+                <label for="recipient-name" class="col-form-label"
+                  >Profile Image</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  id="image-register-input"
+                />
+              </div>
+
+              <div class="mb-2">
+                <label for="recipient-name" class="col-form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name-register-input"
+                />
+              </div>
+
+              <div class="mb-2">
+                <label for="recipient-name" class="col-form-label"
+                  >Username</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username-register-input"
+                />
+              </div>
+
+              <div class="mb-2">
+                <label for="recipient-name" class="col-form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email-register-input"
+                />
+              </div>
+
+              <div class="mb-2">
+                <label for="message-text" class="col-form-label"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password-register-input"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="register()">
+              Register
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Toasts -->
     <div id="toast-placeholder"></div>

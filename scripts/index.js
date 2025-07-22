@@ -1,5 +1,18 @@
-// TODO:
-// 1. fix broken image display in profile image post.
+// TODO: Refactoring Code
+// 1. Clean-Up: Change Some HTML code and remove unnecssary accessibility code + any additional props from all elements.
+
+// 2. HTML: Update:
+//    a. view user name and image in the bar if he logged in, else view the default image and guest with random number.
+//    b. make the nav bar fixed and make the changes requires.
+//    c. make the show hide passwords also to register and add confirm password.
+//    d. make some UI spinners so the operations feels dynamic and responsive.
+//    e. make the brand name abroad from the options.
+//    f. make create post area so the user can create post later on.
+//    g. make the secondary color better and change the toast color to be also as primary one.
+
+// 3. JS: Clean the code "don't change the logic"
+// 4. JS: Work on Error handling and some field validation "try any library does it asap".
+
 
 // POSTS
 async function fetchPosts() {
@@ -53,6 +66,57 @@ async function login() {
     // Clear the fields...
     $("#username-login-input").val("");
     $("#password-login-input").val("");
+    updateNavigation();
+  }
+}
+
+async function register() {
+  // validation logic here...
+
+  const formDataPayload = new FormData();
+
+  let profileImage = $("#image-register-input")[0].files[0];
+  formDataPayload.append("image", profileImage);
+  formDataPayload.append("name", $("#name-register-input").val().trim());
+  formDataPayload.append(
+    "username",
+    $("#username-register-input").val().trim()
+  );
+  formDataPayload.append("email", $("#email-register-input").val().trim());
+  formDataPayload.append(
+    "password",
+    $("#password-register-input").val().trim()
+  );
+
+  console.log("formdata");
+  console.log(formDataPayload);
+
+  try {
+    const response = await axios.post(
+      `https://tarmeezacademy.com/api/v1/register`,
+      formDataPayload
+    );
+
+    // Store the data in local Storage...
+    // Soon this storage should be encrypted and decrypted...
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+    localStorage.setItem("token", JSON.stringify(response.data.token));
+
+    createToastMessage(
+      `Welcome ${response.data.user.username}, It's good to see you today !`
+    );
+  } catch (error) {
+    // for now just alert the error...
+    alert(error);
+  } finally {
+    let modal = bootstrap.Modal.getInstance($("#register-modal"));
+    modal.hide();
+    // Clear the fields...
+    $("#image-register-input")[0] = null;
+    $("#name-register-input").val("");
+    $("#username-register-input").val("");
+    $("#email-register-input").val("");
+    $("#password-register-input").val("");
     updateNavigation();
   }
 }
