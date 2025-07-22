@@ -44,6 +44,7 @@
   </head>
 
   <body class="d-flex flex-column gap-5" style="min-height: 100dvh">
+    <!-- Header -->
     <header>
       <!-- Navigation bar -->
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -70,8 +71,11 @@
             <div class="navbar-nav">
               <a class="nav-link active" href="#">Home</a>
               <a class="nav-link" href="#">Profile</a>
+              <a class="nav-link" href="#" onclick="logout()" id="logout-option"
+                >Logout</a
+              >
 
-              <span class="nav-item dropdown">
+              <span class="nav-item dropdown" id="auth-options">
                 <a
                   class="nav-link dropdown-toggle"
                   role="button"
@@ -100,6 +104,7 @@
       </nav>
     </header>
 
+    <!-- Content -->
     <main class="container">
       <div
         class="d-flex justify-content-center align-items-center"
@@ -149,6 +154,23 @@
                   id="password-login-input"
                 />
               </div>
+
+              <div class="mb-3">
+                <input
+                  onclick="toggleShowPassword()"
+                  class="form-check-input"
+                  type="checkbox"
+                  id="show-password"
+                  
+                />
+                <label
+                  class="form-check-label"
+                  style="font-size: 15px"
+                  for="checkDefault"
+                >
+                  Show/Hide Password
+                </label>
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -168,6 +190,9 @@
     </div>
 
     <!-- 2. Register Modal -->
+
+    <!-- Toasts -->
+    <div id="toast-placeholder"></div>
   </body>
 
   <!-- page script -->

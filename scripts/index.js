@@ -1,3 +1,6 @@
+// TODO:
+// 1. fix broken image display in profile image post.
+
 // POSTS
 async function fetchPosts() {
   const response = await axios.get(
@@ -16,6 +19,62 @@ function viewPosts(posts) {
   posts.forEach((post) => {
     $("#posts").append(createPostItem(post));
   });
+}
+
+// AUTH
+async function login() {
+  // validation logic here...
+
+  const loginFormPayload = {
+    username: $("#username-login-input").val().trim(),
+    password: $("#password-login-input").val().trim(),
+  };
+
+  try {
+    const response = await axios.post(
+      `https://tarmeezacademy.com/api/v1/login`,
+      loginFormPayload
+    );
+
+    // Store the data in local Storage...
+    // Soon this storage should be encrypted and decrypted...
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+    localStorage.setItem("token", JSON.stringify(response.data.token));
+
+    createToastMessage(
+      `Welcome ${response.data.user.username}, It's good to see you today !`
+    );
+  } catch (error) {
+    // for now just alert the error...
+    alert(error);
+  } finally {
+    let modal = bootstrap.Modal.getInstance($("#login-modal"));
+    modal.hide();
+    // Clear the fields...
+    $("#username-login-input").val("");
+    $("#password-login-input").val("");
+    updateNavigation();
+  }
+}
+
+function logout() {
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  updateNavigation();
+  createToastMessage("Logging out has done successfully !");
+}
+
+// UI Code
+function updateNavigation() {
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
+
+  if (isAuthenticated) {
+    $("#auth-options").addClass("d-none");
+    $("#logout-option").removeClass("d-none");
+  } else {
+    $("#auth-options").removeClass("d-none");
+    $("#logout-option").addClass("d-none");
+  }
 }
 
 function createPostItem(post) {
@@ -103,35 +162,39 @@ function createPostItem(post) {
     `;
 }
 
-fetchPosts();
+function createToastMessage(
+  message = "Successfully Done.",
+  toastType = "primary"
+) {
+  const toastPlaceholder = document.getElementById("toast-placeholder");
 
-// AUTH
-async function login() {
-  // validation logic here...
+  // Inner function to create toast UI...
+  const appendToast = (message, type) => {
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = [
+      `<div class="mx-3 position-fixed bottom-0 left-0 alert alert-${type} alert-dismissible fade show" role="alert" id="toast-message">`,
+      `   <div>${message}</div>`,
+      '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+      "</div>",
+    ].join("");
 
-  const loginFormPayload = {
-    username: $("#username-login-input").val().trim(),
-    password: $("#password-login-input").val().trim(),
+    toastPlaceholder.append(wrapper);
   };
 
-  try {
-    const response = await axios.post(
-      `https://tarmeezacademy.com/api/v1/login`,
-      loginFormPayload
+  appendToast(message, toastType);
+  setTimeout(() => {
+    const alertInstance = bootstrap.Alert.getOrCreateInstance(
+      $("#toast-message")
     );
-
-    // Store the data in local Storage...
-    // Soon this storage should be encrypted and decrypted...
-    localStorage.setItem("loggedin-user", JSON.stringify(response.data.user));
-
-    let modal = bootstrap.Modal.getInstance($("#login-modal"));
-    modal.hide();
-  } catch (error) {
-    // for now just alert the error...
-    alert(error);
-  } finally {
-    // Clear the fields...
-    $("#username-login-input").val("");
-    $("#password-login-input").val("");
-  }
+    alertInstance.close();
+  }, 2500);
 }
+
+function toggleShowPassword() {
+  let isChecked = $("#show-password").prop("checked");
+  $("#password-login-input").attr("type", isChecked ? "text" : "password");
+}
+
+// loading logic
+fetchPosts();
+updateNavigation();
