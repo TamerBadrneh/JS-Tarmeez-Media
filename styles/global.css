@@ -1,0 +1,65 @@
+* {
+  font-family: Geist, Poppins !important;
+}
+
+/* Override Bootstrap primary button colors */
+.btn-primary,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:hover,
+.btn-outline-primary,
+.btn-outline-primary:active,
+.btn-outline-primary:focus,
+.btn-outline-primary:hover {
+  background-color: #1aa09f !important;
+  border-color: #1aa09f !important;
+  color: #fff !important;
+}
+
+/* For outline-primary, keep text color when not hovered */
+.btn-outline-primary,
+.btn-outline-primary:active,
+.btn-outline-primary:focus {
+  color: #1aa09f !important;
+  background-color: transparent !important;
+}
+
+/* On hover/focus/active, outline-primary text becomes white */
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  color: #fff !important;
+  background-color: #1aa09f !important;
+  border-color: #1aa09f !important;
+}
+
+/* Override Bootstrap secondary button colors */
+.btn-secondary,
+.btn-secondary:active,
+.btn-secondary:focus,
+.btn-secondary:hover,
+.btn-outline-secondary,
+.btn-outline-secondary:active,
+.btn-outline-secondary:focus,
+.btn-outline-secondary:hover {
+  background-color: #b49eff !important;
+  border-color: #b49eff !important;
+  color: #fff !important;
+}
+
+/* For outline-secondary, keep text color when not hovered */
+.btn-outline-secondary,
+.btn-outline-secondary:active,
+.btn-outline-secondary:focus {
+  color: #b49eff !important;
+  background-color: transparent !important;
+}
+
+/* On hover/focus/active, outline-secondary text becomes white */
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus,
+.btn-outline-secondary:active {
+  color: #fff !important;
+  background-color: #b49eff !important;
+  border-color: #b49eff !important;
+}

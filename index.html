@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarmeez Media - Home</title>
+    <!-- Icon -->
+    <link rel="icon" href="./assets/images/App Logo.png" />
+
+    <!-- Font -->
+    <!-- 1. Geist -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- 2. Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Imports -->
+
+    <!-- 1. Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="./node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <!-- 2. Bootstrap Script -->
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 3. Axios -->
+    <script src="./node_modules/axios/dist/axios.min.js"></script>
+
+    <!-- 4. JQuery -->
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+
+    <!-- CSS Code - Global Styling -->
+    <link rel="stylesheet" href="./styles/global.css" />
+  </head>
+
+  <body class="d-flex flex-column gap-5" style="min-height: 100dvh">
+    <header>
+      <!-- Navigation bar -->
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <section class="d-flex gap-2 align-items-center fw-semibold">
+            <img
+              src="./assets/images/App Logo.png"
+              alt="App Logo"
+              width="30px"
+              height="30px"
+            />
+            Tarmeez Media
+          </section>
+          <!-- <span class="navbar-brand"></span> -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavAltMarkup"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+              <a class="nav-link active" href="#">Home</a>
+              <a class="nav-link" href="#">Profile</a>
+
+              <span class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                >
+                  Authentication
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      data-bs-toggle="modal"
+                      data-bs-target="#login-modal"
+                      href="#"
+                      >Login</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">Register</a>
+                  </li>
+                </ul>
+              </span>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <div
+        class="d-flex justify-content-center align-items-center"
+        style="min-height: 100vh"
+      >
+        <!-- Posts List -->
+        <section class="col-12 col-sm-10 col-md-7" id="posts">
+          <div class="d-flex justify-content-center align-items-center">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- 1. Login Modal -->
+
+    <div class="modal fade" id="login-modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Login To Your Account
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"
+                  >Username</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username-login-input"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password-login-input"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="login()">
+              Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Register Modal -->
+  </body>
+
+  <!-- page script -->
+  <script src="./scripts/index.js"></script>
+</html>
