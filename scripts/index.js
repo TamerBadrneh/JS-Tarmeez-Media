@@ -32,44 +32,56 @@ function viewPosts(posts) {
   });
 }
 
-// AUTH --- here we are now...
+// AUTH 
 async function login() {
-  // validation logic here...
+  // display spinner...
+  $("#login-btn").html(createButtonSpinner("Login"));
 
-  const loginFormPayload = {
+  // Get Fields
+  const payload = {
     username: $("#username-login-input").val().trim(),
     password: $("#password-login-input").val().trim(),
   };
 
+  // TODO: fields validation...
+
   try {
-    $("#login-spinner").removeClass("d-none");
+    // API Request
     const response = await axios.post(
       `https://tarmeezacademy.com/api/v1/login`,
-      loginFormPayload
+      payload
     );
 
-    // Store the data in local Storage...
-    // Soon this storage should be encrypted and decrypted...
+    // Store the logged in user in local storage
     localStorage.setItem("user", JSON.stringify(response.data.user));
     localStorage.setItem("token", JSON.stringify(response.data.token));
 
+    // notify the user.
     createToastMessage(
       `Welcome ${response.data.user.username}, It's good to see you today !`
     );
   } catch (error) {
-    // for now just alert the error...
-    alert(error);
+    // display the error by modal.
+    $("#login-modal-message").html(error.response.data.message);
+    const loginErrorModal = new bootstrap.Modal($("#invalid-login-modal"));
+    loginErrorModal.show();
   } finally {
+    // Close Modal.
     let modal = bootstrap.Modal.getInstance($("#login-modal"));
     modal.hide();
-    // Clear the fields...
+
+    // Clean The Fields.
     $("#username-login-input").val("");
     $("#password-login-input").val("");
-    // remove spinner
-    $("#login-spinner").addClass("d-none");
+
+    // remove the spinner
+    $("#login-btn").html("Login");
+
+    // Update Nav-bar and display the correct buttons.
     updateNavigation();
   }
 }
+
 
 async function register() {
   // validation logic here...
@@ -164,6 +176,18 @@ function updateNavigation() {
         Tarmeez Media
       `);
   }
+}
+
+function createButtonSpinner(textContent) {
+  return `
+    ${textContent}
+    <div
+      class="spinner-border spinner-border-sm"
+      role="status"
+    >
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  `;
 }
 
 function createPostItem(post) {

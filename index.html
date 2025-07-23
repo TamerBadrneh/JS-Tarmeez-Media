@@ -193,14 +193,12 @@
             >
               Close
             </button>
-            <button type="button" class="btn btn-primary" onclick="login()">
-              <div
-                class="d-none spinner-border spinner-border-sm"
-                role="status"
-                id="login-spinner"
-              >
-                <span class="visually-hidden">Loading...</span>
-              </div>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="login()"
+              id="login-btn"
+            >
               Login
             </button>
           </div>
@@ -298,6 +296,36 @@
                 <span class="visually-hidden">Loading...</span>
               </div>
               Register
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Invalid login Modal -->
+    <div class="modal fade" id="invalid-login-modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Something Wrong
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p id="login-modal-message"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Close
             </button>
           </div>
         </div>
