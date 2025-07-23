@@ -1,18 +1,3 @@
-// TODO: Refactoring Code
-// [OK] 1. Clean-Up: Change Some HTML code and remove unnecssary accessibility code + any additional props from all elements. [Done]
-
-// [] 2. HTML: Update:
-//    [DONE] a. view user name and image in the bar if he logged in, else view the default image and guest with random number.
-//    [DONE] b. make the nav bar fixed and make the changes requires.
-//    [DONE] c. make the show hide passwords also to register and add confirm password.
-//    [DONE] d. make some UI spinners so the operations feels dynamic and responsive.
-//    [DONE] e. make the brand name abroad from the options.
-//    [] f. make create post area so the user can create post later on.
-//    [DONE] g. make the secondary color better and change the toast color to be also as primary one.
-
-// 3. JS: Clean the code "don't change the logic"
-// 4. JS: Work on Error handling and some field validation "try any library does it asap".
-
 // POSTS
 async function fetchPosts() {
   const response = await axios.get(
@@ -32,10 +17,10 @@ function viewPosts(posts) {
   });
 }
 
-// AUTH 
+// AUTH
 async function login() {
   // display spinner...
-  $("#login-btn").html(createButtonSpinner("Login"));
+  $("#login-btn").html(createButtonSpinner());
 
   // Get Fields
   const payload = {
@@ -62,9 +47,9 @@ async function login() {
     );
   } catch (error) {
     // display the error by modal.
-    $("#login-modal-message").html(error.response.data.message);
-    const loginErrorModal = new bootstrap.Modal($("#invalid-login-modal"));
-    loginErrorModal.show();
+    $("#error-modal-message").html(error.response.data.message);
+    const errorModal = new bootstrap.Modal($("#invalid-modal"));
+    errorModal.show();
   } finally {
     // Close Modal.
     let modal = bootstrap.Modal.getInstance($("#login-modal"));
@@ -78,81 +63,100 @@ async function login() {
     $("#login-btn").html("Login");
 
     // Update Nav-bar and display the correct buttons.
-    updateNavigation();
+    displayNavigation();
   }
 }
 
-
 async function register() {
-  // validation logic here...
+  // display spinner...
+  $("#register-btn").html(createButtonSpinner());
 
-  const formDataPayload = new FormData();
+  // Get Fields
+  const payload = new FormData();
+  const fields = [
+    { id: "image-register-input", key: "image", isFile: true },
+    { id: "name-register-input", key: "name" },
+    { id: "username-register-input", key: "username" },
+    { id: "email-register-input", key: "email" },
+    { id: "password-register-input", key: "password" },
+  ];
+  fields.forEach((field) => {
+    if (field.isFile) {
+      payload.append(field.key, $(`#${field.id}`)[0].files[0]);
+    } else {
+      payload.append(field.key, $(`#${field.id}`).val().trim());
+    }
+  });
 
-  let profileImage = $("#image-register-input")[0].files[0];
-  formDataPayload.append("image", profileImage);
-  formDataPayload.append("name", $("#name-register-input").val().trim());
-  formDataPayload.append(
-    "username",
-    $("#username-register-input").val().trim()
-  );
-  formDataPayload.append("email", $("#email-register-input").val().trim());
-  formDataPayload.append(
-    "password",
-    $("#password-register-input").val().trim()
-  );
-
-  console.log("formdata");
-  console.log(formDataPayload);
+  // TODO: fields validation...
 
   try {
-    $("#register-spinner").removeClass("d-none");
+    // API Request
     const response = await axios.post(
       `https://tarmeezacademy.com/api/v1/register`,
-      formDataPayload
+      payload
     );
 
-    // Store the data in local Storage...
-    // Soon this storage should be encrypted and decrypted...
+    // Store the logged in user in local storage
     localStorage.setItem("user", JSON.stringify(response.data.user));
     localStorage.setItem("token", JSON.stringify(response.data.token));
 
+    // notify the user.
     createToastMessage(
       `Welcome ${response.data.user.username}, It's good to see you today !`
     );
   } catch (error) {
-    // for now just alert the error...
-    console.log(error);
+    // display the error by modal.
+    $("#error-modal-message").html(error.response.data.message);
+    const errorModal = new bootstrap.Modal($("#invalid-modal"));
+    errorModal.show();
   } finally {
+    // Close Modal.
     let modal = bootstrap.Modal.getInstance($("#register-modal"));
     modal.hide();
-    // Clear the fields...
-    $("#image-register-input")[0] = null;
+
+    // Clean The Fields.
+    $("#image-register-input").val("");
     $("#name-register-input").val("");
     $("#username-register-input").val("");
     $("#email-register-input").val("");
     $("#password-register-input").val("");
 
     // remove the spinner
-    $("#register-spinner").addClass("d-none");
-    updateNavigation();
+    $("#register-btn").html("Register");
+
+    // Update Nav-bar and display the correct buttons.
+    displayNavigation();
   }
 }
 
 function logout() {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
-  updateNavigation();
+  displayNavigation();
   createToastMessage("Logging out has done successfully !");
 }
 
 // UI Code
-function updateNavigation() {
+function displayNavigation() {
+  // Loading the initial options
+  $("#navbar-options").html(`
+        <a class="nav-link active" href="#">Home</a>
+        <a class="nav-link" href="#">Profile</a>
+  `);
+
   const isAuthenticated = Boolean(localStorage.getItem("token"));
 
   if (isAuthenticated) {
+    // Add The logout option for loggedin users...
+    $("#navbar-options").append(`
+      <a class="nav-link" href="#" onclick="logout()" id="logout-option">Logout</a>
+    `);
+
+    // Fetching user data for profile display.
     const userData = JSON.parse(localStorage.getItem("user"));
-    $("#auth-options").addClass("d-none");
-    $("#logout-option").removeClass("d-none");
+
+    // display user image
     $("#user").html(`
         <img
           src=${userData.profile_image}
@@ -160,12 +164,43 @@ function updateNavigation() {
           width="30px"
           height="30px"
           class="rounded-circle"
+          onerror="this.onerror=null;this.src='../assets/images/default_profile_image.webp';"
         />
         ${userData.username}
       `);
   } else {
-    $("#auth-options").removeClass("d-none");
-    $("#logout-option").addClass("d-none");
+    // add the login/register options for guests users
+    $("#navbar-options").append(`
+        <span class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+            Authentication
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a
+                class="dropdown-item"
+                data-bs-toggle="modal"
+                data-bs-target="#login-modal"
+                href="#"
+              >
+                Login
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#register-modal"
+              >
+                Register
+              </a>
+            </li>
+          </ul>
+        </span>
+      `);
+
+    // display brand logo instead of user
     $("#user").html(`
         <img
           src="./assets/images/App Logo.png"
@@ -178,9 +213,9 @@ function updateNavigation() {
   }
 }
 
-function createButtonSpinner(textContent) {
+function createButtonSpinner() {
   return `
-    ${textContent}
+    Please Wait 
     <div
       class="spinner-border spinner-border-sm"
       role="status"
@@ -311,4 +346,4 @@ function toggleShowPassword(formType) {
 
 // loading logic
 fetchPosts();
-updateNavigation();
+displayNavigation();
