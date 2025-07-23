@@ -42,8 +42,8 @@
 .btn-outline-secondary:active,
 .btn-outline-secondary:focus,
 .btn-outline-secondary:hover {
-  background-color: #b49eff !important;
-  border-color: #b49eff !important;
+  background-color: #6c63ff !important;
+  border-color: #6c63ff !important;
   color: #fff !important;
 }
 
@@ -51,7 +51,7 @@
 .btn-outline-secondary,
 .btn-outline-secondary:active,
 .btn-outline-secondary:focus {
-  color: #b49eff !important;
+  color: #6c63ff !important;
   background-color: transparent !important;
 }
 
@@ -60,6 +60,43 @@
 .btn-outline-secondary:focus,
 .btn-outline-secondary:active {
   color: #fff !important;
-  background-color: #b49eff !important;
-  border-color: #b49eff !important;
+  background-color: #6c63ff !important;
+  border-color: #6c63ff !important;
+}
+
+/* Override Bootstrap primary alert color */
+.alert-primary {
+  background-color: #1aa09f !important;
+  border-color: #1aa09f !important;
+  color: #fff !important;
+}
+
+/* Override Bootstrap secondary alert color */
+.alert-secondary {
+  background-color: #6c63ff !important;
+  border-color: #6c63ff !important;
+  color: #fff !important;
+}
+
+/* Cool hover effect for primary and secondary buttons */
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  box-shadow: 0 4px 16px 0 rgba(26, 160, 159, 0.15),
+    0 1.5px 6px 0 rgba(108, 99, 255, 0.1);
+  transform: translateY(-2px) scale(1.03);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+/* Ensure transition is smooth for all states */
+.btn-primary,
+.btn-secondary,
+.btn-outline-primary,
+.btn-outline-secondary {
+  transition: box-shadow 0.2s, transform 0.2s;
 }

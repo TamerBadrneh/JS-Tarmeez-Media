@@ -1,25 +1,23 @@
 // TODO: Refactoring Code
-// 1. Clean-Up: Change Some HTML code and remove unnecssary accessibility code + any additional props from all elements.
+// [OK] 1. Clean-Up: Change Some HTML code and remove unnecssary accessibility code + any additional props from all elements. [Done]
 
-// 2. HTML: Update:
-//    a. view user name and image in the bar if he logged in, else view the default image and guest with random number.
-//    b. make the nav bar fixed and make the changes requires.
-//    c. make the show hide passwords also to register and add confirm password.
-//    d. make some UI spinners so the operations feels dynamic and responsive.
-//    e. make the brand name abroad from the options.
-//    f. make create post area so the user can create post later on.
-//    g. make the secondary color better and change the toast color to be also as primary one.
+// [] 2. HTML: Update:
+//    [DONE] a. view user name and image in the bar if he logged in, else view the default image and guest with random number.
+//    [DONE] b. make the nav bar fixed and make the changes requires.
+//    [DONE] c. make the show hide passwords also to register and add confirm password.
+//    [DONE] d. make some UI spinners so the operations feels dynamic and responsive.
+//    [DONE] e. make the brand name abroad from the options.
+//    [] f. make create post area so the user can create post later on.
+//    [DONE] g. make the secondary color better and change the toast color to be also as primary one.
 
 // 3. JS: Clean the code "don't change the logic"
 // 4. JS: Work on Error handling and some field validation "try any library does it asap".
-
 
 // POSTS
 async function fetchPosts() {
   const response = await axios.get(
     "https://tarmeezacademy.com/api/v1/posts?limit=5"
   );
-
   const posts = response.data.data;
   viewPosts(posts);
 }
@@ -34,7 +32,7 @@ function viewPosts(posts) {
   });
 }
 
-// AUTH
+// AUTH --- here we are now...
 async function login() {
   // validation logic here...
 
@@ -44,6 +42,7 @@ async function login() {
   };
 
   try {
+    $("#login-spinner").removeClass("d-none");
     const response = await axios.post(
       `https://tarmeezacademy.com/api/v1/login`,
       loginFormPayload
@@ -66,6 +65,8 @@ async function login() {
     // Clear the fields...
     $("#username-login-input").val("");
     $("#password-login-input").val("");
+    // remove spinner
+    $("#login-spinner").addClass("d-none");
     updateNavigation();
   }
 }
@@ -92,6 +93,7 @@ async function register() {
   console.log(formDataPayload);
 
   try {
+    $("#register-spinner").removeClass("d-none");
     const response = await axios.post(
       `https://tarmeezacademy.com/api/v1/register`,
       formDataPayload
@@ -107,7 +109,7 @@ async function register() {
     );
   } catch (error) {
     // for now just alert the error...
-    alert(error);
+    console.log(error);
   } finally {
     let modal = bootstrap.Modal.getInstance($("#register-modal"));
     modal.hide();
@@ -117,6 +119,9 @@ async function register() {
     $("#username-register-input").val("");
     $("#email-register-input").val("");
     $("#password-register-input").val("");
+
+    // remove the spinner
+    $("#register-spinner").addClass("d-none");
     updateNavigation();
   }
 }
@@ -133,11 +138,31 @@ function updateNavigation() {
   const isAuthenticated = Boolean(localStorage.getItem("token"));
 
   if (isAuthenticated) {
+    const userData = JSON.parse(localStorage.getItem("user"));
     $("#auth-options").addClass("d-none");
     $("#logout-option").removeClass("d-none");
+    $("#user").html(`
+        <img
+          src=${userData.profile_image}
+          alt="user image"
+          width="30px"
+          height="30px"
+          class="rounded-circle"
+        />
+        ${userData.username}
+      `);
   } else {
     $("#auth-options").removeClass("d-none");
     $("#logout-option").addClass("d-none");
+    $("#user").html(`
+        <img
+          src="./assets/images/App Logo.png"
+          alt="App Logo"
+          width="30px"
+          height="30px"
+        />
+        Tarmeez Media
+      `);
   }
 }
 
@@ -151,11 +176,8 @@ function createPostItem(post) {
               <img
                 width="40"
                 height="40"
-                src="${
-                  typeof postAuthor.profile_image !== "object"
-                    ? postAuthor.profile_image
-                    : "././assets/images/default_profile_image.webp"
-                } "
+                src="${postAuthor.profile_image}"
+                onerror="this.onerror=null;this.src='../assets/images/default_profile_image.webp';"
                 alt="profile image"
                 class="rounded-circle border border-2"
                 style="border-color: #1aa09f !important"
@@ -179,18 +201,19 @@ function createPostItem(post) {
                 ${tags ?? ""}
               </p>
 
-              ${
-                typeof post.image !== "object"
-                  ? `
-                    <img
-                        src=${post.image}
-                        alt="post-image"
-                        class="w-100 rounded-3"
-                        style="max-height: 500px;"
-                    />
-                `
-                  : ""
-              } 
+             ${
+               typeof post.image === "string" &&
+               post.image.trim() !== "" &&
+               post.image.trim() !== "[object Object]"
+                 ? `<img
+                      src="${post.image}"
+                      alt="post-image"
+                      class="w-100 rounded-3"
+                      style="max-height: 500px;"
+                      onerror="this.style.display='none';"
+                    />`
+                 : ""
+             }
               
 
               <div class="input-group mt-3">
@@ -254,9 +277,12 @@ function createToastMessage(
   }, 2500);
 }
 
-function toggleShowPassword() {
-  let isChecked = $("#show-password").prop("checked");
-  $("#password-login-input").attr("type", isChecked ? "text" : "password");
+function toggleShowPassword(formType) {
+  let isChecked = $(`#show-${formType}-password`).prop("checked");
+  $(`#password-${formType}-input`).attr(
+    "type",
+    isChecked ? "text" : "password"
+  );
 }
 
 // loading logic

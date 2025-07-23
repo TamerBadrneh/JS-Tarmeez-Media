@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!-- meta-data -->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,8 +24,8 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
-    <!-- Imports -->
 
+    <!-- Imports -->
     <!-- 1. Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -43,22 +44,20 @@
     <link rel="stylesheet" href="./styles/global.css" />
   </head>
 
+  <!-- content -->
   <body class="d-flex flex-column gap-5" style="min-height: 100dvh">
     <!-- Header -->
-    <header>
+    <header class="mb-5">
       <!-- Navigation bar -->
-      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
         <div class="container-fluid">
-          <section class="d-flex gap-2 align-items-center fw-semibold">
-            <img
-              src="./assets/images/App Logo.png"
-              alt="App Logo"
-              width="30px"
-              height="30px"
-            />
-            Tarmeez Media
-          </section>
-          <!-- <span class="navbar-brand"></span> -->
+          <section
+            class="d-flex gap-2 align-items-center fw-bold me-3"
+            id="user"
+          ></section>
+
+          <!-- Button for appearing the content in a menu (responsive) -->
+          <!-- TODO: Change the button shape and appearence -->
           <button
             class="navbar-toggler"
             type="button"
@@ -67,6 +66,7 @@
           >
             <span class="navbar-toggler-icon"></span>
           </button>
+
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
               <a class="nav-link active" href="#">Home</a>
@@ -113,9 +113,21 @@
     <!-- Content -->
     <main class="container">
       <div
-        class="d-flex justify-content-center align-items-center"
+        class="d-flex flex-column gap-5 justify-content-center align-items-center"
         style="min-height: 100vh"
       >
+        <!-- Create Post --- delayed for fixing... -->
+        <!-- <section class="col-12 col-sm-10 col-md-7">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Create New Post</h5>
+              <h6 class="card-subtitle mb-2 text-body-secondary">
+                Inspire the community with your ideas !
+              </h6>
+            </div>
+          </div>
+        </section> -->
+
         <!-- Posts List -->
         <section class="col-12 col-sm-10 col-md-7" id="posts">
           <div class="d-flex justify-content-center align-items-center">
@@ -129,7 +141,6 @@
 
     <!-- Modals -->
     <!-- 1. Login Modal -->
-
     <div class="modal fade" id="login-modal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -141,9 +152,7 @@
           <div class="modal-body">
             <form>
               <div class="mb-3">
-                <label for="recipient-name" class="col-form-label"
-                  >Username</label
-                >
+                <label class="col-form-label">Username</label>
                 <input
                   type="text"
                   class="form-control"
@@ -151,9 +160,7 @@
                 />
               </div>
               <div class="mb-3">
-                <label for="message-text" class="col-form-label"
-                  >Password</label
-                >
+                <label class="col-form-label">Password</label>
                 <input
                   type="password"
                   class="form-control"
@@ -163,10 +170,10 @@
 
               <div class="mb-3">
                 <input
-                  onclick="toggleShowPassword()"
+                  onclick="toggleShowPassword('login')"
                   class="form-check-input"
                   type="checkbox"
-                  id="show-password"
+                  id="show-login-password"
                 />
                 <label
                   class="form-check-label"
@@ -187,6 +194,13 @@
               Close
             </button>
             <button type="button" class="btn btn-primary" onclick="login()">
+              <div
+                class="d-none spinner-border spinner-border-sm"
+                role="status"
+                id="login-spinner"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
               Login
             </button>
           </div>
@@ -206,9 +220,7 @@
           <div class="modal-body">
             <form>
               <div class="mb-2">
-                <label for="recipient-name" class="col-form-label"
-                  >Profile Image</label
-                >
+                <label class="col-form-label">Profile Image</label>
                 <input
                   type="file"
                   class="form-control"
@@ -217,7 +229,7 @@
               </div>
 
               <div class="mb-2">
-                <label for="recipient-name" class="col-form-label">Name</label>
+                <label class="col-form-label">Name</label>
                 <input
                   type="text"
                   class="form-control"
@@ -226,9 +238,7 @@
               </div>
 
               <div class="mb-2">
-                <label for="recipient-name" class="col-form-label"
-                  >Username</label
-                >
+                <label class="col-form-label">Username</label>
                 <input
                   type="text"
                   class="form-control"
@@ -237,7 +247,7 @@
               </div>
 
               <div class="mb-2">
-                <label for="recipient-name" class="col-form-label">Email</label>
+                <label class="col-form-label">Email</label>
                 <input
                   type="email"
                   class="form-control"
@@ -246,14 +256,28 @@
               </div>
 
               <div class="mb-2">
-                <label for="message-text" class="col-form-label"
-                  >Password</label
-                >
+                <label class="col-form-label">Password</label>
                 <input
                   type="password"
                   class="form-control"
                   id="password-register-input"
                 />
+              </div>
+
+              <div class="mb-3">
+                <input
+                  onclick="toggleShowPassword('register')"
+                  class="form-check-input"
+                  type="checkbox"
+                  id="show-register-password"
+                />
+                <label
+                  class="form-check-label"
+                  style="font-size: 15px"
+                  for="checkDefault"
+                >
+                  Show/Hide Password
+                </label>
               </div>
             </form>
           </div>
@@ -266,6 +290,13 @@
               Close
             </button>
             <button type="button" class="btn btn-primary" onclick="register()">
+              <div
+                class="d-none spinner-border spinner-border-sm"
+                role="status"
+                id="register-spinner"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
               Register
             </button>
           </div>
