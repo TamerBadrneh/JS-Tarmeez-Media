@@ -1,15 +1,24 @@
+// GLOBALS
+let currentPage = 1;
+let lastPage = 1;
+let isLoadingPosts = false;
+
 // POSTS
 async function fetchPosts() {
   const response = await axios.get(
-    "https://tarmeezacademy.com/api/v1/posts?limit=10"
+    `https://tarmeezacademy.com/api/v1/posts?limit=10&page=${currentPage}`
   );
+
+  lastPage = response.data.meta.last_page;
+
   const posts = response.data.data;
+
   viewPosts(posts);
 }
 
 function viewPosts(posts) {
-  // Remove the spinner and loading the create post and posts
-  $("#posts").html(loadCreatePost());
+  // TODO: Display the create post without removing all posts...
+  $("#posts").html("");
 
   // View Data
   posts.forEach((post) => {
@@ -402,36 +411,58 @@ function toggleShowPassword(formType) {
 
 function loadCreatePost() {
   return `
-        <div class="card my-5">
-          <div class="card-body">
-            <h5 class="card-title">Create New Post</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">
-              Inspire the community with your ideas !
-            </h6>
-            <div class="mb-2">
-              <label class="col-form-label">Title</label>
-              <input type="text" class="form-control" id="post-title-input" />
-            </div>
-            <div class="mb-2">
-              <label class="col-form-label">Description</label>
-              <textarea
-                class="form-control"
-                id="post-body-input"
-                style="height: 100px; resize: none"
-              ></textarea>
-            </div>
-            <div class="mb-2">
-              <label class="col-form-label">Add an image</label>
-              <input type="file" class="form-control" id="post-image-input" />
-            </div>
-            <div class="mt-4 mb-1 d-flex justify-content-end">
-              <button class="btn btn-primary" onclick="createPost()" id="post-btn">Post</button>
+        <section class="col-12 col-sm-10 col-md-7 mx-auto" >
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Create New Post</h5>
+              <h6 class="card-subtitle mb-2 text-body-secondary">
+                Inspire the community with your ideas !
+              </h6>
+              <div class="mb-2">
+                <label class="col-form-label">Title</label>
+                <input type="text" class="form-control" id="post-title-input" />
+              </div>
+              <div class="mb-2">
+                <label class="col-form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  id="post-body-input"
+                  style="height: 100px; resize: none"
+                ></textarea>
+              </div>
+              <div class="mb-2">
+                <label class="col-form-label">Add an image</label>
+                <input type="file" class="form-control" id="post-image-input" />
+              </div>
+              <div class="mt-4 mb-1 d-flex justify-content-end">
+                <button class="btn btn-primary" onclick="createPost()" id="post-btn">Post</button>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
   `;
 }
 
-// loading logic
-fetchPosts();
-displayNavigation();
+// Event Listeners
+window.addEventListener("scroll", async function () {
+  const scrollTop = window.scrollY;
+  const windowHeight = window.innerHeight;
+  const docHeight = document.documentElement.scrollHeight;
+
+  if (
+    docHeight - (scrollTop + windowHeight) < 1400 &&
+    currentPage < lastPage &&
+    !isLoadingPosts
+  ) {
+    isLoadingPosts = true;
+    currentPage++;
+    await fetchPosts();
+    isLoadingPosts = false;
+  }
+});
+
+window.addEventListener("load", () => {
+  fetchPosts();
+  displayNavigation();
+  $("#posts-container").prepend(loadCreatePost());
+});
