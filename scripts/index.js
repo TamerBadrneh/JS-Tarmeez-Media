@@ -1,20 +1,76 @@
 // POSTS
 async function fetchPosts() {
   const response = await axios.get(
-    "https://tarmeezacademy.com/api/v1/posts?limit=5"
+    "https://tarmeezacademy.com/api/v1/posts?limit=10"
   );
   const posts = response.data.data;
   viewPosts(posts);
 }
 
 function viewPosts(posts) {
-  // Clearing
-  $("#posts").html("");
+  // Remove the spinner and loading the create post and posts
+  $("#posts").html(loadCreatePost());
 
   // View Data
   posts.forEach((post) => {
     $("#posts").append(createPostItem(post));
   });
+}
+
+async function createPost() {
+  // load a spinner here...
+  $("#post-btn").html(createButtonSpinner());
+  let isAuthenticated = Boolean(localStorage.getItem("token"));
+
+  if (isAuthenticated) {
+    let fields = [
+      { id: "image", isFile: true },
+      {
+        id: "body",
+        isFile: false,
+      },
+      {
+        id: "title",
+        isFile: false,
+      },
+    ];
+
+    // Payload fetching
+    let payload = new FormData();
+    fields.forEach((field) =>
+      payload.append(
+        field.id,
+        field.isFile
+          ? $(`#post-${field.id}-input`)[0].files[0]
+          : $(`#post-${field.id}-input`).val().trim()
+      )
+    );
+
+    try {
+      // Create the post
+      let token = localStorage
+        .getItem("token")
+        .slice(1, localStorage.getItem("token").length - 1);
+      await axios.post(`https://tarmeezacademy.com/api/v1/posts`, payload, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchPosts();
+
+      createToastMessage("Post Created Successfully", "primary");
+    } catch (error) {
+      $("#error-modal-message").html(error.response.data.message);
+      const errorModal = new bootstrap.Modal($("#invalid-modal"));
+      errorModal.show();
+    }
+  } else {
+    let loginModal = new bootstrap.Modal($("#login-modal"));
+    loginModal.show();
+  }
+
+  $("#post-btn").html("Post");
 }
 
 // AUTH
@@ -342,6 +398,38 @@ function toggleShowPassword(formType) {
     "type",
     isChecked ? "text" : "password"
   );
+}
+
+function loadCreatePost() {
+  return `
+        <div class="card my-5">
+          <div class="card-body">
+            <h5 class="card-title">Create New Post</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">
+              Inspire the community with your ideas !
+            </h6>
+            <div class="mb-2">
+              <label class="col-form-label">Title</label>
+              <input type="text" class="form-control" id="post-title-input" />
+            </div>
+            <div class="mb-2">
+              <label class="col-form-label">Description</label>
+              <textarea
+                class="form-control"
+                id="post-body-input"
+                style="height: 100px; resize: none"
+              ></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="col-form-label">Add an image</label>
+              <input type="file" class="form-control" id="post-image-input" />
+            </div>
+            <div class="mt-4 mb-1 d-flex justify-content-end">
+              <button class="btn btn-primary" onclick="createPost()" id="post-btn">Post</button>
+            </div>
+          </div>
+        </div>
+  `;
 }
 
 // loading logic
