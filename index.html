@@ -1,286 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!-- meta-data -->
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tarmeez Media - Home</title>
-    <!-- Icon -->
-    <link rel="icon" href="./assets/images/App Logo.png" />
-
-    <!-- Font -->
-    <!-- 1. Geist -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- 2. Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Imports -->
-    <!-- 1. Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="./node_modules/bootstrap/dist/css/bootstrap.min.css"
-    />
-    <!-- 2. Bootstrap Script -->
-    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- 3. Axios -->
-    <script src="./node_modules/axios/dist/axios.min.js"></script>
-
-    <!-- 4. JQuery -->
-    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-
-    <!-- CSS Code - Global Styling -->
-    <link rel="stylesheet" href="./styles/global.css" />
-  </head>
-
-  <!-- content -->
-  <body class="d-flex flex-column gap-5" style="min-height: 100dvh">
-    <!-- Header -->
-    <header class="mb-5">
-      <!-- Navigation bar -->
-      <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-        <div class="container-fluid">
-          <section
-            class="d-flex gap-2 align-items-center fw-bold me-3"
-            id="user"
-          ></section>
-
-          <!-- Button for appearing the content in a menu (responsive) -->
-          <!-- TODO: Change the button shape and appearence -->
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNavAltMarkup"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav" id="navbar-options"></div>
-          </div>
-        </div>
-      </nav>
-    </header>
-
-    <!-- Content -->
-    <main class="container">
-      <div
-        class="d-flex flex-column gap-5 justify-content-center align-items-center"
-        style="min-height: 100vh"
-        id="posts-container"
-      >
-        <!-- Posts List -->
-        <section class="col-12 col-sm-10 col-md-7 mx-auto" id="posts"></section>
-      </div>
-    </main>
-
-    <!-- Modals -->
-    <!-- 1. Login Modal -->
-    <div class="modal fade" id="login-modal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
-              Login To Your Account
-            </h1>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label class="col-form-label">Username</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="username-login-input"
-                />
-              </div>
-              <div class="mb-3">
-                <label class="col-form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password-login-input"
-                />
-              </div>
-
-              <div class="mb-3">
-                <input
-                  onclick="toggleShowPassword('login')"
-                  class="form-check-input"
-                  type="checkbox"
-                  id="show-login-password"
-                />
-                <label
-                  class="form-check-label"
-                  style="font-size: 15px"
-                  for="checkDefault"
+    <head>
+        <!-- Meta Data -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tarmeez Media - Home</title>
+        <link rel="icon" href="./assets/images/App Logo.png">
+        <!-- Fonts -->
+        <!-- Geist -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+        <!-- Poppins -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+        <!-- Imports -->
+        <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="./node_modules/axios/dist/axios.min.js"></script>
+        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+        <link rel="stylesheet" href="./styles/global.css">
+    </head>
+    <body class="d-flex flex-column gap-5">
+        <!-- Header -->
+        <header class="mb-5">
+            <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+                <div class="container-fluid">
+                    <!-- User Section -->
+                    <section class="d-flex gap-2 align-items-center fw-bold me-3" id="user"></section>
+                    <!-- Responsive Menu Button -->
+                    <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavAltMarkup"
+                    >
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Navbar Options -->
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav" id="navbar-options"></div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <!-- Main Content -->
+        <main class="container">
+            <div class="d-flex flex-column gap-5 justify-content-center align-items-center" id="posts-container">
+                <!-- Posts List -->
+                <section class="col-12 col-sm-10 col-md-7 mx-auto" id="posts"></section>
+            </div>
+        </main>
+        <!-- Modals -->
+        <!-- Login Modal -->
+        <div class="modal fade" id="login-modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">
+                            Login To Your Account
+                        </h1>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-3">
+                                <label class="col-form-label">Username</label>
+                                <input type="text" class="form-control" id="username-login-input">
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-form-label">Password</label>
+                                <input type="password" class="form-control" id="password-login-input">
+                            </div>
+                            <div class="mb-3">
+                                <input
+                                    onclick="toggleShowPassword('login')"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="show-login-password"
+                                >
+                                <label class="form-check-label" for="checkDefault">
+                                    Show/Hide Password
+                                </label
                 >
-                  Show/Hide Password
-                </label>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              onclick="login()"
-              id="login-btn"
-            >
-              Login
-            </button>
-          </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="login()"
+                            id="login-btn"
+                        >
+                            Login
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-
-    <!-- 2. Register Modal -->
-    <div class="modal fade" id="register-modal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
-              Register New Account
-            </h1>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-2">
-                <label class="col-form-label">Profile Image</label>
-                <input
-                  type="file"
-                  class="form-control"
-                  id="image-register-input"
-                />
-              </div>
-
-              <div class="mb-2">
-                <label class="col-form-label">Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="name-register-input"
-                />
-              </div>
-
-              <div class="mb-2">
-                <label class="col-form-label">Username</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="username-register-input"
-                />
-              </div>
-
-              <div class="mb-2">
-                <label class="col-form-label">Email</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email-register-input"
-                />
-              </div>
-
-              <div class="mb-2">
-                <label class="col-form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password-register-input"
-                />
-              </div>
-
-              <div class="mb-3">
-                <input
-                  onclick="toggleShowPassword('register')"
-                  class="form-check-input"
-                  type="checkbox"
-                  id="show-register-password"
-                />
-                <label
-                  class="form-check-label"
-                  style="font-size: 15px"
-                  for="checkDefault"
+        <!-- Register Modal -->
+        <div class="modal fade" id="register-modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">
+                            Register New Account
+                        </h1>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-2">
+                                <label class="col-form-label">Profile Image</label>
+                                <input type="file" class="form-control" id="image-register-input">
+                            </div>
+                            <div class="mb-2">
+                                <label class="col-form-label">Name</label>
+                                <input type="text" class="form-control" id="name-register-input">
+                            </div>
+                            <div class="mb-2">
+                                <label class="col-form-label">Username</label>
+                                <input type="text" class="form-control" id="username-register-input">
+                            </div>
+                            <div class="mb-2">
+                                <label class="col-form-label">Email</label>
+                                <input type="email" class="form-control" id="email-register-input">
+                            </div>
+                            <div class="mb-2">
+                                <label class="col-form-label">Password</label>
+                                <input type="password" class="form-control" id="password-register-input">
+                            </div>
+                            <div class="mb-3">
+                                <input
+                                    onclick="toggleShowPassword('register')"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="show-register-password"
+                                >
+                                <label class="form-check-label" for="checkDefault">
+                                    Show/Hide Password
+                                </label
                 >
-                  Show/Hide Password
-                </label>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              onclick="register()"
-              id="register-btn"
-            >
-              Register
-            </button>
-          </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="register()"
+                            id="register-btn"
+                        >
+                            Register
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-
-    <!-- 3. Error Modal -->
-    <div class="modal fade" id="invalid-modal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
-              Something Wrong
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <p id="error-modal-message"></p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
+        <!-- Error Modal -->
+        <div class="modal fade" id="invalid-modal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">
+                            Something Wrong
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="error-modal-message"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Toasts -->
-    <div id="toast-placeholder"></div>
-  </body>
-
-  <!-- page script -->
-  <script src="./scripts/index.js"></script>
+        <!-- Comments Modal -->
+        <!-- Comments Modal (Bootstrap 5) -->
+        <div
+            class="modal fade"
+            id="comments-modal"
+            tabindex="-1"
+            aria-labelledby="commentsModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="commentsModalLabel">Comments</h5>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Comment Entry Section -->
+                        <div class="input-group mb-4">
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="new-comment-input"
+                                placeholder="Add a comment..."
+                            >
+                            <button class="btn btn-primary" type="button" id="add-comment-btn">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    class="bi bi-plus-lg"
+                                    viewBox="0 0 16 16"
+                                >
+                                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <!-- Comments List Section -->
+                        <div id="comments-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Toasts -->
+        <div id="toast-placeholder"></div>
+        <!-- Page Script -->
+        <script src="./scripts/index.js"></script>
+    </body>
 </html>

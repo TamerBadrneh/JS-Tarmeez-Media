@@ -100,3 +100,14 @@
 .btn-outline-secondary {
   transition: box-shadow 0.2s, transform 0.2s;
 }
+
+.post-card {
+  transition: transform 0.5s cubic-bezier(0.4, 2, 0.6, 1),
+    box-shadow 0.5s cubic-bezier(0.4, 2, 0.6, 1);
+  cursor: pointer;
+}
+.post-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 32px 0 rgba(26, 160, 159, 0.15); /* #1aa09f with 15% opacity */
+  border-color: #1aa09f !important;
+}

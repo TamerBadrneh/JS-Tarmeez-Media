@@ -1,207 +1,11 @@
-// GLOBALS
+// Global Variables
 let currentPage = 1;
 let lastPage = 1;
 let isLoadingPosts = false;
+const baseUrl = "https://tarmeezacademy.com/api/v1/";
 
-// POSTS
-async function fetchPosts() {
-  const response = await axios.get(
-    `https://tarmeezacademy.com/api/v1/posts?limit=10&page=${currentPage}`
-  );
-
-  lastPage = response.data.meta.last_page;
-
-  const posts = response.data.data;
-
-  viewPosts(posts);
-}
-
-function viewPosts(posts) {
-  // View Data
-  posts.forEach((post) => {
-    $("#posts").append(createPostItem(post));
-  });
-}
-
-async function createPost() {
-  // load a spinner here...
-  $("#post-btn").html(createButtonSpinner());
-  let isAuthenticated = Boolean(localStorage.getItem("token"));
-
-  if (isAuthenticated) {
-    let fields = [
-      { id: "image", isFile: true },
-      {
-        id: "body",
-        isFile: false,
-      },
-      {
-        id: "title",
-        isFile: false,
-      },
-    ];
-
-    // Payload fetching
-    let payload = new FormData();
-    fields.forEach((field) =>
-      payload.append(
-        field.id,
-        field.isFile
-          ? $(`#post-${field.id}-input`)[0].files[0]
-          : $(`#post-${field.id}-input`).val().trim()
-      )
-    );
-
-    try {
-      // Create the post
-      let token = localStorage
-        .getItem("token")
-        .slice(1, localStorage.getItem("token").length - 1);
-      await axios.post(`https://tarmeezacademy.com/api/v1/posts`, payload, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-
-      fetchPosts();
-
-      createToastMessage("Post Created Successfully", "primary");
-    } catch (error) {
-      $("#error-modal-message").html(error.response.data.message);
-      const errorModal = new bootstrap.Modal($("#invalid-modal"));
-      errorModal.show();
-    }
-  } else {
-    let loginModal = new bootstrap.Modal($("#login-modal"));
-    loginModal.show();
-  }
-
-  $("#post-btn").html("Post");
-}
-
-// AUTH
-async function login() {
-  // display spinner...
-  $("#login-btn").html(createButtonSpinner());
-
-  // Get Fields
-  const payload = {
-    username: $("#username-login-input").val().trim(),
-    password: $("#password-login-input").val().trim(),
-  };
-
-  // TODO: fields validation...
-
-  try {
-    // API Request
-    const response = await axios.post(
-      `https://tarmeezacademy.com/api/v1/login`,
-      payload
-    );
-
-    // Store the logged in user in local storage
-    localStorage.setItem("user", JSON.stringify(response.data.user));
-    localStorage.setItem("token", JSON.stringify(response.data.token));
-
-    // notify the user.
-    createToastMessage(
-      `Welcome ${response.data.user.username}, It's good to see you today !`
-    );
-  } catch (error) {
-    // display the error by modal.
-    $("#error-modal-message").html(error.response.data.message);
-    const errorModal = new bootstrap.Modal($("#invalid-modal"));
-    errorModal.show();
-  } finally {
-    // Close Modal.
-    let modal = bootstrap.Modal.getInstance($("#login-modal"));
-    modal.hide();
-
-    // Clean The Fields.
-    $("#username-login-input").val("");
-    $("#password-login-input").val("");
-
-    // remove the spinner
-    $("#login-btn").html("Login");
-
-    // Update Nav-bar and display the correct buttons.
-    displayNavigation();
-  }
-}
-
-async function register() {
-  // display spinner...
-  $("#register-btn").html(createButtonSpinner());
-
-  // Get Fields
-  const payload = new FormData();
-  const fields = [
-    { id: "image-register-input", key: "image", isFile: true },
-    { id: "name-register-input", key: "name" },
-    { id: "username-register-input", key: "username" },
-    { id: "email-register-input", key: "email" },
-    { id: "password-register-input", key: "password" },
-  ];
-  fields.forEach((field) => {
-    if (field.isFile) {
-      payload.append(field.key, $(`#${field.id}`)[0].files[0]);
-    } else {
-      payload.append(field.key, $(`#${field.id}`).val().trim());
-    }
-  });
-
-  // TODO: fields validation...
-
-  try {
-    // API Request
-    const response = await axios.post(
-      `https://tarmeezacademy.com/api/v1/register`,
-      payload
-    );
-
-    // Store the logged in user in local storage
-    localStorage.setItem("user", JSON.stringify(response.data.user));
-    localStorage.setItem("token", JSON.stringify(response.data.token));
-
-    // notify the user.
-    createToastMessage(
-      `Welcome ${response.data.user.username}, It's good to see you today !`
-    );
-  } catch (error) {
-    // display the error by modal.
-    $("#error-modal-message").html(error.response.data.message);
-    const errorModal = new bootstrap.Modal($("#invalid-modal"));
-    errorModal.show();
-  } finally {
-    // Close Modal.
-    let modal = bootstrap.Modal.getInstance($("#register-modal"));
-    modal.hide();
-
-    // Clean The Fields.
-    $("#image-register-input").val("");
-    $("#name-register-input").val("");
-    $("#username-register-input").val("");
-    $("#email-register-input").val("");
-    $("#password-register-input").val("");
-
-    // remove the spinner
-    $("#register-btn").html("Register");
-
-    // Update Nav-bar and display the correct buttons.
-    displayNavigation();
-  }
-}
-
-function logout() {
-  localStorage.removeItem("user");
-  localStorage.removeItem("token");
-  displayNavigation();
-  createToastMessage("Logging out has done successfully !");
-}
-
-// UI Code
+// UI Rendering
 function displayNavigation() {
-  // Loading the initial options
   $("#navbar-options").html(`
         <a class="nav-link active" href="#">Home</a>
         <a class="nav-link" href="#">Profile</a>
@@ -210,15 +14,12 @@ function displayNavigation() {
   const isAuthenticated = Boolean(localStorage.getItem("token"));
 
   if (isAuthenticated) {
-    // Add The logout option for loggedin users...
     $("#navbar-options").append(`
       <a class="nav-link" href="#" onclick="logout()" id="logout-option">Logout</a>
     `);
 
-    // Fetching user data for profile display.
     const userData = JSON.parse(localStorage.getItem("user"));
 
-    // display user image
     $("#user").html(`
         <img
           src=${userData.profile_image}
@@ -231,7 +32,6 @@ function displayNavigation() {
         ${userData.username}
       `);
   } else {
-    // add the login/register options for guests users
     $("#navbar-options").append(`
         <span class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
@@ -262,7 +62,6 @@ function displayNavigation() {
         </span>
       `);
 
-    // display brand logo instead of user
     $("#user").html(`
         <img
           src="./assets/images/App Logo.png"
@@ -275,7 +74,7 @@ function displayNavigation() {
   }
 }
 
-function createButtonSpinner() {
+function displayButtonSpinner() {
   return `
     Please Wait 
     <div
@@ -287,12 +86,12 @@ function createButtonSpinner() {
   `;
 }
 
-function createPostItem(post) {
+function displayPost(post) {
   const postAuthor = post.author;
   const tags = post.tags.map((tag) => `#${tag.name}`).join(" ");
 
   return `
-        <div class="card mb-5">
+        <div class="post-card card mb-5" onclick="fetchComments(${post.id})">
             <div class="card-header d-flex align-items-center gap-2">
               <img
                 width="40"
@@ -335,42 +134,31 @@ function createPostItem(post) {
                     />`
                  : ""
              }
-              
-
-              <div class="input-group mt-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Add New Comment"
-                  aria-label="Recipient’s username"
-                  aria-describedby="button-addon2"
-                />
-                <button
-                  class="btn btn-outline-primary"
-                  type="button"
-                  id="button-addon2"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-plus-lg"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
-                    />
-                  </svg>
-                </button>
-              </div>
             </div>
           </div>
     `;
 }
 
-function createToastMessage(
+function displayComment(comment) {
+  return `
+     <div id="comment-${comment.id}" class="d-flex align-items-start mb-3 comment-item">
+        <img
+            src="${comment.author.profile_image}"
+            onerror="this.onerror=null;this.src='../assets/images/default_profile_image.webp';"
+            alt="profile"
+            class="rounded-circle me-2"
+            width="36"
+            height="36"
+        >
+        <div>
+            <div class="fw-semibold">${comment.author.username}</div>
+            <div>${comment.body}</div>
+        </div>
+    </div>
+  `;
+}
+
+function displayToastMessage(
   message = "Successfully Done.",
   toastType = "primary"
 ) {
@@ -406,7 +194,7 @@ function toggleShowPassword(formType) {
   );
 }
 
-function loadCreatePost() {
+function displayCreatePost() {
   return `
         <section class="col-12 col-sm-10 col-md-7 mx-auto" >
           <div class="card">
@@ -440,7 +228,211 @@ function loadCreatePost() {
   `;
 }
 
-// Event Listeners
+function displayErrorModal(message) {
+  $("#error-modal-message").html(message);
+  const errorModal = new bootstrap.Modal($("#invalid-modal"));
+  errorModal.show();
+}
+
+// CRUD
+
+// 1. READ
+// A. Posts
+async function fetchPosts() {
+  try {
+    const response = await axios.get(
+      `${baseUrl}posts?limit=10&page=${currentPage}`
+    );
+
+    const posts = response.data.data;
+
+    lastPage = response.data.meta.last_page;
+
+    renderPostsList(posts);
+  } catch (error) {
+    displayErrorModal(error.response.data.message);
+  }
+}
+
+// B. Comments
+async function fetchComments(postId) {
+  try {
+    const response = await axios(`${baseUrl}posts/${postId}`);
+
+    let comments = response.data.data.comments;
+
+    renderPostCommentsList(comments);
+
+    const commentsModal = new bootstrap.Modal($("#comments-modal")[0]);
+    commentsModal.show();
+  } catch (error) {
+    displayErrorModal(error.data.response.message);
+  }
+}
+
+// 2. CREATE
+async function createPost() {
+  $("#post-btn").html(displayButtonSpinner());
+  let isAuthenticated = Boolean(localStorage.getItem("token"));
+
+  if (isAuthenticated) {
+    let fields = [
+      { id: "image", isFile: true },
+      {
+        id: "body",
+        isFile: false,
+      },
+      {
+        id: "title",
+        isFile: false,
+      },
+    ];
+
+    let payload = new FormData();
+    fields.forEach((field) =>
+      payload.append(
+        field.id,
+        field.isFile
+          ? $(`#post-${field.id}-input`)[0].files[0]
+          : $(`#post-${field.id}-input`).val().trim()
+      )
+    );
+
+    try {
+      let token = localStorage
+        .getItem("token")
+        .slice(1, localStorage.getItem("token").length - 1);
+      await axios.post(`${baseUrl}posts`, payload, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchPosts();
+
+      displayToastMessage("Post Created Successfully", "primary");
+    } catch (error) {
+      displayErrorModal(error.response.data.message);
+    }
+  } else {
+    let loginModal = new bootstrap.Modal($("#login-modal"));
+    loginModal.show();
+  }
+
+  $("#post-btn").html("Post");
+}
+
+// AUTH
+async function login() {
+  $("#login-btn").html(displayButtonSpinner());
+
+  const payload = {
+    username: $("#username-login-input").val().trim(),
+    password: $("#password-login-input").val().trim(),
+  };
+
+  // TODO: fields validation...
+
+  try {
+    const response = await axios.post(`${baseUrl}login`, payload);
+
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+    localStorage.setItem("token", JSON.stringify(response.data.token));
+
+    displayToastMessage(
+      `Welcome ${response.data.user.username}, It's good to see you today !`
+    );
+  } catch (error) {
+    displayErrorModal(error.response.data.message);
+  } finally {
+    let modal = bootstrap.Modal.getInstance($("#login-modal"));
+    modal.hide();
+
+    $("#username-login-input").val("");
+    $("#password-login-input").val("");
+
+    $("#login-btn").html("Login");
+
+    displayNavigation();
+  }
+}
+
+async function register() {
+  // display spinner...
+  $("#register-btn").html(displayButtonSpinner());
+
+  // Get Fields
+  const payload = new FormData();
+  const fields = [
+    { id: "image-register-input", key: "image", isFile: true },
+    { id: "name-register-input", key: "name" },
+    { id: "username-register-input", key: "username" },
+    { id: "email-register-input", key: "email" },
+    { id: "password-register-input", key: "password" },
+  ];
+  fields.forEach((field) => {
+    if (field.isFile) {
+      payload.append(field.key, $(`#${field.id}`)[0].files[0]);
+    } else {
+      payload.append(field.key, $(`#${field.id}`).val().trim());
+    }
+  });
+
+  // TODO: fields validation...
+
+  try {
+    // API Request
+    const response = await axios.post(`${baseUrl}register`, payload);
+
+    // Store the logged in user in local storage
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+    localStorage.setItem("token", JSON.stringify(response.data.token));
+
+    // notify the user.
+    displayToastMessage(
+      `Welcome ${response.data.user.username}, It's good to see you today !`
+    );
+  } catch (error) {
+    displayErrorModal(error.response.data.message);
+  } finally {
+    let modal = bootstrap.Modal.getInstance($("#register-modal"));
+    modal.hide();
+
+    $("#image-register-input").val("");
+    $("#name-register-input").val("");
+    $("#username-register-input").val("");
+    $("#email-register-input").val("");
+    $("#password-register-input").val("");
+
+    $("#register-btn").html("Register");
+
+    displayNavigation();
+  }
+}
+
+function logout() {
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  displayNavigation();
+  displayToastMessage("Logging out has done successfully !");
+}
+
+// Helpers
+function renderPostsList(postsList) {
+  postsList.forEach(function (post) {
+    $("#posts").append(displayPost(post));
+  });
+}
+
+function renderPostCommentsList(commentsList) {
+  $("#comments-list").html("");
+  commentsList.forEach(function (comment) {
+    $("#comments-list").append(displayComment(comment));
+  });
+}
+
+// Event Handlers
+
 window.addEventListener("scroll", async function () {
   const scrollTop = window.scrollY;
   const windowHeight = window.innerHeight;
@@ -458,8 +450,8 @@ window.addEventListener("scroll", async function () {
   }
 });
 
-window.addEventListener("load", async () => {
-  await fetchPosts();
+window.addEventListener("load", () => {
+  fetchPosts();
   displayNavigation();
-  $("#posts-container").prepend(loadCreatePost());
+  $("#posts-container").prepend(displayCreatePost());
 });
