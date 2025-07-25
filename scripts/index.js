@@ -17,9 +17,6 @@ async function fetchPosts() {
 }
 
 function viewPosts(posts) {
-  // TODO: Display the create post without removing all posts...
-  $("#posts").html("");
-
   // View Data
   posts.forEach((post) => {
     $("#posts").append(createPostItem(post));
@@ -461,8 +458,8 @@ window.addEventListener("scroll", async function () {
   }
 });
 
-window.addEventListener("load", () => {
-  fetchPosts();
+window.addEventListener("load", async () => {
+  await fetchPosts();
   displayNavigation();
   $("#posts-container").prepend(loadCreatePost());
 });
